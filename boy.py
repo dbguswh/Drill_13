@@ -8,6 +8,7 @@ from transitions import Machine
 
 import game_world
 from ball import Ball
+from items import Item
 
 
 class Boy:
@@ -19,6 +20,7 @@ class Boy:
         self.dir = 0
         self.face_dir = 1
         self.pressed_keys = set()
+        self.selected_item = Item.NONE
 
         self.machine = Machine(
             model=self,
@@ -47,8 +49,13 @@ class Boy:
     def on_enter_RUN(self):
         self.frame = 0
 
+    def select_item(self, item):
+        self.selected_item = Item(item)
+
     def fire_ball(self):
-        ball = Ball(self.x, self.y, self.face_dir * 10)
+        if self.selected_item == Item.NONE:
+            return
+        ball = Ball(self.x, self.y, self.face_dir * 10, self.selected_item)
         game_world.add_oject(ball)
 
     def handle_event(self, event):
