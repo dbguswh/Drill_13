@@ -98,7 +98,21 @@ class ModeTests(unittest.TestCase):
         self.open_items()
         self.assertEqual(play_mode.boy.selected_item, Item.LARGE_BALL)
 
+    def test_default_small_ball_fires_without_opening_items(self):
+        self.assertEqual(play_mode.boy.selected_item, Item.SMALL_BALL)
+        dispatch(play_mode, key(p.SDLK_SPACE))
+        ball = world.world[1][-1]
+        self.assertIsInstance(ball, Ball)
+        self.assertEqual(ball.item, Item.SMALL_BALL)
+        self.open_items()
+        dispatch(item_mode, key(p.SDLK_i))
+        dispatch(play_mode, key(p.SDLK_SPACE))
+        self.assertEqual(world.world[1][-1].item, Item.SMALL_BALL)
+        self.assertEqual(len(world.world[1]), 3)
+
     def test_ball_sizes_and_none(self):
+        self.open_items()
+        dispatch(item_mode, key(p.SDLK_0), key(p.SDLK_i))
         dispatch(play_mode, key(p.SDLK_SPACE))
         self.assertEqual(len(world.world[1]), 1)
         self.open_items()
@@ -185,7 +199,7 @@ class ModeTests(unittest.TestCase):
         before = snapshot()
         dispatch(item_mode, key(p.SDLK_9), key(p.SDLK_p), key(p.SDLK_SPACE), key(p.SDLK_LEFT))
         item_mode.update()
-        self.assertEqual(play_mode.boy.selected_item, Item.NONE)
+        self.assertEqual(play_mode.boy.selected_item, Item.SMALL_BALL)
         self.assertEqual(snapshot(), before)
         self.assertEqual(framework.stack, [play_mode, item_mode])
 
@@ -195,7 +209,7 @@ class ModeTests(unittest.TestCase):
         self.assertEqual(framework.stack, [title_mode])
         self.assertTrue(all(not layer for layer in world.world))
         dispatch(title_mode, key(p.SDLK_SPACE))
-        self.assertEqual(play_mode.boy.selected_item, Item.NONE)
+        self.assertEqual(play_mode.boy.selected_item, Item.SMALL_BALL)
 
     def test_window_close_from_items_requests_quit(self):
         self.open_items()
