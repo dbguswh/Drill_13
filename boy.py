@@ -119,8 +119,3 @@ class Boy:
             row = 300 if self.face_dir == 1 else 200
             self.image.clip_draw(self.frame * 100, row, 100, 100,
                                  self.x, self.y)
-
-        item_image = Ball.image_for(self.selected_item)
-        if item_image is not None:
-            item_y = self.y - 30 if self.state == 'SLEEP' else self.y
-            item_image.draw(self.x + self.face_dir * 35, item_y)
