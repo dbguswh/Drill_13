@@ -33,11 +33,13 @@ def finish():
 
 
 def handle_events():
-    for event in get_events():
+    events = get_events()
+    for index, event in enumerate(events):
         if event.type == SDL_QUIT:
             game_framework.quit()
             return
         elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
+            play_mode.remember_key_releases(events[index + 1:])
             game_framework.pop_mode()
             return
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
@@ -45,7 +47,7 @@ def handle_events():
             game_framework.change_mode(title_mode)
             return
         elif event.type == SDL_KEYUP:
-            play_mode.paused_key_up_events.append(event)
+            play_mode.remember_key_releases([event])
         elif event.type == SDL_KEYDOWN and event.key in ITEM_KEYS:
             play_mode.boy.select_item(ITEM_KEYS[event.key])
 

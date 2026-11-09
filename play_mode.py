@@ -10,7 +10,7 @@ from grass import Grass
 
 def handle_events():
     event_list = get_events()
-    for event in event_list:
+    for index, event in enumerate(event_list):
         if event.type == SDL_QUIT:
             game_framework.quit()
             return
@@ -19,9 +19,11 @@ def handle_events():
             return
         elif event.type == SDL_KEYDOWN and event.key == SDLK_p:
             game_framework.push_mode(pause_mode)
+            remember_key_releases(event_list[index + 1:])
             return
         elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
             game_framework.push_mode(item_mode)
+            remember_key_releases(event_list[index + 1:])
             return
         else:
             boy.handle_event(event)
@@ -59,6 +61,10 @@ def pause():
     global pause_started_at, paused_key_up_events
     pause_started_at = get_time()
     paused_key_up_events = []
+
+
+def remember_key_releases(events):
+    paused_key_up_events.extend(event for event in events if event.type == SDL_KEYUP)
 
 
 def resume():
